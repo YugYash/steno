@@ -24,9 +24,42 @@ export default async function DashboardPage({
       ? attempts.reduce((sum, attempt) => sum + attempt.accuracy, 0) / attempts.length
       : 0;
 
+  const hasTests = tests.length > 0;
+  const hasAttempts = attempts.length > 0;
+
   return (
     <>
-      <div className="grid gap-4 lg:grid-cols-3">
+      <section className="rounded-[2rem] border border-slate-200 bg-[linear-gradient(145deg,#ffffff_0%,#f8fafc_65%,#eff6ff_100%)] p-6 shadow-sm lg:p-8">
+        <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
+          <div>
+            <p className="text-sm font-semibold uppercase tracking-[0.24em] text-sky-700">Today&apos;s focus</p>
+            <h2 className="mt-2 text-3xl font-semibold tracking-tight text-slate-950">
+              {hasTests ? "Practice a test and boost your accuracy" : "Your dashboard is ready"}
+            </h2>
+            <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-600">
+              {hasTests
+                ? "Start with a recording that matches your pace, then review mistakes immediately after submission."
+                : "No tests are available yet. Ask your admin to add a demo test or mark your account as paid."}
+            </p>
+          </div>
+          <div className="flex flex-wrap gap-2">
+            <Link
+              href={hasTests ? `/dashboard/tests/${tests[0]?.slug}` : "/dashboard"}
+              className="rounded-full bg-slate-950 px-5 py-2.5 text-sm font-semibold !text-white transition hover:bg-slate-800"
+            >
+              {hasTests ? "Start next test" : "Refresh dashboard"}
+            </Link>
+            <Link
+              href="/dashboard"
+              className="rounded-full bg-white px-5 py-2.5 text-sm font-semibold text-slate-700 ring-1 ring-slate-200 transition hover:bg-slate-50"
+            >
+              View overview
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
         <article className="rounded-[1.75rem] bg-slate-950 p-6 text-white shadow-lg shadow-slate-300/30">
           <p className="text-sm uppercase tracking-[0.24em] text-sky-200">Access level</p>
           <h2 className="mt-3 text-3xl font-semibold tracking-tight">
@@ -45,7 +78,7 @@ export default async function DashboardPage({
             Includes all tests your current account can access.
           </p>
         </article>
-        <article className="rounded-[1.75rem] border border-slate-200 bg-white p-6 shadow-sm">
+        <article className="rounded-[1.75rem] border border-slate-200 bg-white p-6 shadow-sm md:col-span-2 xl:col-span-1">
           <p className="text-sm uppercase tracking-[0.24em] text-slate-500">Recent average</p>
           <h2 className="mt-3 text-3xl font-semibold tracking-tight text-slate-950">
             {formatPercent(averageScore)}%
@@ -63,7 +96,7 @@ export default async function DashboardPage({
       </div>
 
       <section className="grid gap-8 xl:grid-cols-[1.2fr_0.8fr]">
-        <div className="space-y-4 rounded-[2rem] border border-slate-200 bg-white p-6 shadow-sm">
+        <div className="space-y-5 rounded-[2rem] border border-slate-200 bg-white p-6 shadow-sm">
           <div className="flex items-center justify-between gap-4">
             <div>
               <p className="text-sm uppercase tracking-[0.24em] text-slate-500">Practice tests</p>
@@ -76,14 +109,16 @@ export default async function DashboardPage({
           <div className="grid gap-4">
             {tests.length === 0 ? (
               <div className="rounded-2xl border border-dashed border-slate-300 bg-slate-50 p-6 text-sm text-slate-600">
-                No tests are available for your account yet. Ask the admin to add a demo test or mark
-                your account as paid.
+                <p>
+                  No tests are available for your account yet. Ask the admin to add a demo test or mark
+                  your account as paid.
+                </p>
               </div>
             ) : (
               tests.map((test) => (
                 <article
                   key={test.id}
-                  className="rounded-[1.5rem] border border-slate-200 bg-slate-50 p-5"
+                  className="rounded-[1.5rem] border border-slate-200 bg-slate-50 p-5 transition hover:border-sky-200 hover:bg-sky-50/40"
                 >
                   <div className="flex flex-wrap items-center gap-3">
                     <h3 className="text-xl font-semibold tracking-tight text-slate-950">{test.title}</h3>
@@ -103,9 +138,9 @@ export default async function DashboardPage({
                   </div>
                   <Link
                     href={`/dashboard/tests/${test.slug}`}
-                    className="mt-5 inline-flex text-sm font-semibold text-sky-700"
+                    className="mt-5 inline-flex rounded-full bg-white px-4 py-2 text-sm font-semibold text-sky-700 ring-1 ring-sky-200 transition hover:bg-sky-100"
                   >
-                    Open test →
+                    Open test
                   </Link>
                 </article>
               ))
@@ -119,6 +154,14 @@ export default async function DashboardPage({
             <h2 className="mt-2 text-2xl font-semibold tracking-tight text-slate-950">
               Review your latest scores
             </h2>
+          </div>
+
+          <div className="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3">
+            <p className="text-sm text-slate-600">
+              {hasAttempts
+                ? `You have ${attempts.length} recent attempt${attempts.length === 1 ? "" : "s"} to review.`
+                : "Complete your first attempt to track progress here."}
+            </p>
           </div>
 
           <div className="space-y-3">

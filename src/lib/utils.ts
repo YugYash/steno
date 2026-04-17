@@ -26,22 +26,53 @@ export function formatDate(value: string) {
   }).format(new Date(value));
 }
 
-export function getPlayableAudioUrl(value: string) {
+function getGoogleDriveFileId(value: string) {
   try {
     const url = new URL(value);
+    const host = url.hostname.toLowerCase();
 
-    if (url.hostname === "drive.google.com") {
-      const directFileMatch = url.pathname.match(/\/file\/d\/([^/]+)/);
-      const queryId = url.searchParams.get("id");
-      const fileId = directFileMatch?.[1] ?? queryId;
-
-      if (fileId) {
-        return `https://drive.google.com/uc?export=download&id=${fileId}`;
-      }
+    if (!host.includes("drive.google.com") && !host.includes("docs.google.com")) {
+      return null;
     }
 
-    return value;
+    const directFileMatch = url.pathname.match(/\/file\/(?:u\/\d+\/)?d\/([^/]+)/);
+    if (directFileMatch?.[1]) {
+      return directFileMatch[1];
+    }
+
+    const queryId = url.searchParams.get("id");
+    if (queryId) {
+      return queryId;
+    }
+
+    const segments = url.pathname.split("/").filter(Boolean);
+    const dIndex = segments.indexOf("d");
+    if (dIndex >= 0 && segments[dIndex + 1]) {
+      return segments[dIndex + 1];
+    }
+
+    return null;
   } catch {
-    return value;
+    return null;
   }
+}
+
+export function getGoogleDrivePreviewUrl(value: string) {
+  const fileId = getGoogleDriveFileId(value);
+
+  if (!fileId) {
+    return null;
+  }
+
+  return `https://drive.google.com/file/d/${fileId}/preview`;
+}
+
+export function getPlayableAudioUrl(value: string) {
+  const fileId = getGoogleDriveFileId(value);
+
+  if (fileId) {
+    return `https://docs.google.com/uc?export=open&id=${fileId}`;
+  }
+
+  return value;
 }

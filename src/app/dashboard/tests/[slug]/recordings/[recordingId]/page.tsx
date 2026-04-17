@@ -7,7 +7,7 @@ import { SubmitButton } from "@/components/submit-button";
 import { requireActiveUser } from "@/lib/auth";
 import { fetchAccessibleRecordingById } from "@/lib/data";
 import { readFlash } from "@/lib/flash";
-import { getPlayableAudioUrl } from "@/lib/utils";
+import { getGoogleDrivePreviewUrl, getPlayableAudioUrl } from "@/lib/utils";
 import type { SearchParams } from "@/lib/types";
 
 export default async function RecordingPracticePage({
@@ -34,6 +34,9 @@ export default async function RecordingPracticePage({
     );
   }
 
+  const playableAudioUrl = getPlayableAudioUrl(recording.audio_url);
+  const googleDrivePreviewUrl = getGoogleDrivePreviewUrl(recording.audio_url);
+
   return (
     <div className="grid gap-6 xl:grid-cols-[0.95fr_1.05fr]">
       <section className="space-y-6 rounded-[2rem] border border-slate-200 bg-white p-6 shadow-sm">
@@ -58,11 +61,25 @@ export default async function RecordingPracticePage({
 
         <div className="rounded-[1.5rem] border border-slate-200 bg-slate-50 p-5">
           <p className="text-sm font-semibold text-slate-700">Audio player</p>
-          <audio className="mt-4 w-full" controls preload="none" src={getPlayableAudioUrl(recording.audio_url)}>
-            Your browser does not support HTML audio playback.
-          </audio>
+          {googleDrivePreviewUrl ? (
+            <div className="mt-4 rounded-xl border border-slate-200 bg-white p-3">
+              <p className="text-xs font-medium uppercase tracking-[0.18em] text-slate-500">
+                Google Drive preview
+              </p>
+              <iframe
+                title="Google Drive audio preview"
+                src={googleDrivePreviewUrl}
+                className="mt-3 h-20 w-full rounded-lg border border-slate-200"
+                allow="autoplay"
+              />
+            </div>
+          ) : (
+            <audio className="mt-4 w-full" controls preload="none" src={playableAudioUrl}>
+              Your browser does not support HTML audio playback.
+            </audio>
+          )}
           <p className="mt-4 text-xs leading-6 text-slate-500">
-            If the embedded Google Drive link does not play, open the original source in a new tab:
+            If the audio does not play in your browser, open the source in a new tab:
             {" "}
             <a
               href={recording.audio_url}

@@ -48,7 +48,7 @@ export default async function BlockedPage({
           </Link>
           {context.user ? (
             <form action={logoutAction}>
-              <SubmitButton className="rounded-full" pendingLabel="Signing out...">
+              <SubmitButton className="rounded-full !bg-rose-600 px-4 py-2 text-sm font-medium !text-white ring-1 ring-rose-400/60 transition hover:!bg-rose-700 hover:ring-rose-500/70">
                 Log out
               </SubmitButton>
             </form>

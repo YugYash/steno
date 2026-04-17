@@ -7,6 +7,14 @@ import { createServerSupabaseClient } from "@/lib/supabase/server";
 import type { Database } from "@/lib/supabase/types";
 import type { Profile } from "@/lib/types";
 
+function isMissingAuthSessionError(error: { message?: string } | null) {
+  if (!error?.message) {
+    return false;
+  }
+
+  return error.message.toLowerCase().includes("auth session missing");
+}
+
 function deriveProfileRole(email: string | null, storedProfile: Database["public"]["Tables"]["profiles"]["Row"]) {
   return {
     ...storedProfile,
@@ -101,6 +109,16 @@ export async function getCurrentUserContext() {
   } = await supabase.auth.getUser();
 
   if (error) {
+    if (isMissingAuthSessionError(error)) {
+      return {
+        isConfigured: true,
+        supabase,
+        user: null,
+        profile: null,
+        isAdmin: false,
+      } as const;
+    }
+
     throw new Error(error.message);
   }
 
