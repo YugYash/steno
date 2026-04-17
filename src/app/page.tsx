@@ -1,64 +1,111 @@
-import Image from "next/image";
+import Link from "next/link";
+import { redirect } from "next/navigation";
 
-export default function Home() {
+import { SetupNotice } from "@/components/setup-notice";
+import { getCurrentUserContext } from "@/lib/auth";
+
+export const dynamic = "force-dynamic";
+
+const featureCards = [
+  {
+    title: "Student practice workflow",
+    description:
+      "Students log in, choose a test, pick a WPM recording, listen to audio, and submit their transcript.",
+  },
+  {
+    title: "Instant accuracy feedback",
+    description:
+      "Scores ignore spacing, case, and punctuation, then show mismatched words and the official transcript.",
+  },
+  {
+    title: "Admin controls",
+    description:
+      "The admin can add users, disable accounts, mark paid students, create tests, and upload recordings.",
+  },
+];
+
+export default async function HomePage() {
+  const context = await getCurrentUserContext();
+
+  if (context.user && context.profile) {
+    if (!context.profile.is_active) {
+      redirect("/blocked");
+    }
+
+    redirect(context.isAdmin ? "/admin" : "/dashboard");
+  }
+
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
+    <div className="min-h-screen bg-[radial-gradient(circle_at_top,_#eff6ff,_#f8fafc_40%,_#e2e8f0_100%)]">
+      <main className="mx-auto flex w-full max-w-7xl flex-col gap-12 px-6 py-12 lg:py-16">
+        <section className="grid gap-10 rounded-[2rem] border border-slate-200 bg-white/90 p-8 shadow-xl shadow-slate-200/60 backdrop-blur lg:grid-cols-[1.3fr_0.9fr] lg:p-12">
+          <div className="space-y-6">
+            <p className="text-sm font-semibold uppercase tracking-[0.32em] text-sky-700">
+              Stenography learning platform
+            </p>
+            <div className="space-y-4">
+              <h1 className="max-w-3xl text-4xl font-semibold tracking-tight text-slate-950 sm:text-5xl">
+                Teach steno, run practice tests, and review transcript accuracy in one place.
+              </h1>
+              <p className="max-w-2xl text-lg leading-8 text-slate-600">
+                Steno helps students practice against audio recordings at different words-per-minute
+                speeds, while giving admins a simple dashboard to manage users, paid access, tests,
+                and recording uploads.
+              </p>
+            </div>
+            <div className="flex flex-wrap gap-3">
+              <Link
+                href="/signup"
+                className="rounded-full bg-slate-950 px-6 py-3 text-sm font-semibold text-white transition hover:bg-slate-800"
+              >
+                Create student account
+              </Link>
+              <Link
+                href="/login"
+                className="rounded-full border border-slate-300 bg-white px-6 py-3 text-sm font-semibold text-slate-700 transition hover:border-slate-400 hover:bg-slate-50"
+              >
+                Log in
+              </Link>
+            </div>
+          </div>
+
+          <div className="grid gap-4 rounded-[1.75rem] border border-slate-200 bg-slate-50 p-6">
+            <div className="rounded-2xl bg-slate-950 p-5 text-white shadow-lg shadow-slate-300/40">
+              <p className="text-sm uppercase tracking-[0.24em] text-sky-200">What students do</p>
+              <ul className="mt-4 space-y-3 text-sm leading-6 text-slate-100">
+                <li>• Open demo or paid tests based on account access</li>
+                <li>• Choose the required WPM recording</li>
+                <li>• Listen to the audio and submit the typed transcript</li>
+                <li>• Review score, mistake list, and official reference transcript</li>
+              </ul>
+            </div>
+            <div className="rounded-2xl border border-slate-200 bg-white p-5">
+              <p className="text-sm font-semibold uppercase tracking-[0.24em] text-slate-500">
+                What admins manage
+              </p>
+              <ul className="mt-4 space-y-3 text-sm leading-6 text-slate-600">
+                <li>• Add and disable student accounts without deleting data</li>
+                <li>• Toggle paid access manually</li>
+                <li>• Create demo or paid tests</li>
+                <li>• Attach Google Drive audio links plus canonical transcripts</li>
+              </ul>
+            </div>
+          </div>
+        </section>
+
+        {!context.isConfigured ? <SetupNotice /> : null}
+
+        <section className="grid gap-6 md:grid-cols-3">
+          {featureCards.map((feature) => (
+            <article
+              key={feature.title}
+              className="rounded-[1.75rem] border border-slate-200 bg-white p-6 shadow-sm"
             >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
+              <h2 className="text-xl font-semibold tracking-tight text-slate-950">{feature.title}</h2>
+              <p className="mt-3 text-sm leading-7 text-slate-600">{feature.description}</p>
+            </article>
+          ))}
+        </section>
       </main>
     </div>
   );

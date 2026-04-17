@@ -1,36 +1,106 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Steno
 
-## Getting Started
+A Next.js 16 + Supabase web app for teaching stenography, running dictation practice tests, and managing students.
 
-First, run the development server:
+## Features
+
+- Student signup and login with Supabase Auth
+- Student dashboard with accessible demo/paid tests
+- Practice flow by WPM recording with transcript submission
+- Automatic comparison that ignores spaces, case, and punctuation
+- Attempt history with score, mistake list, and reference transcript
+- Admin dashboard for:
+  - adding student users
+  - disabling users without deleting their data
+  - toggling paid access manually
+  - creating demo or paid tests
+  - attaching Google Drive audio links and canonical transcripts
+
+## Stack
+
+- Next.js 16 App Router
+- React 19
+- Tailwind CSS 4
+- Supabase Auth + Postgres + Row Level Security
+
+## Environment variables
+
+Copy `.env.example` to `.env.local` and fill in your values:
+
+```bash
+cp .env.example .env.local
+```
+
+Required variables:
+
+- `NEXT_PUBLIC_SUPABASE_URL`
+- `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` (or legacy anon key)
+- `SUPABASE_SERVICE_ROLE_KEY`
+- `ADMIN_EMAIL`
+
+## Supabase setup
+
+1. Create a Supabase project.
+2. Run the SQL migration in `supabase/migrations/202604070001_initial.sql` inside the Supabase SQL editor.
+3. Create the one admin auth user manually in Supabase Auth using the same email as `ADMIN_EMAIL`.
+4. Start the app and log in with that admin account.
+
+### Important admin note
+
+This v1 app treats the account matching `ADMIN_EMAIL` as the admin. Create that account manually before handing the app to others, and do not allow that email to be used as a student signup.
+
+## Local development
+
+```bash
+npm install
+npm run dev
+```
+
+Open [http://localhost:3000](http://localhost:3000).
+
+## Available scripts
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npm run build
+npm run lint
+npm run typecheck
+npm run test
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Database model
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+The migration creates these main tables:
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- `profiles`
+- `tests`
+- `recordings`
+- `attempts`
 
-## Learn More
+It also enables Row Level Security so that:
 
-To learn more about Next.js, take a look at the following resources:
+- students can only see their own profile and attempts
+- students only see tests/recordings they are allowed to access
+- paid tests only appear for paid users
+- disabled users are blocked from protected data
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Transcript scoring
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+The app normalizes both the submitted transcript and the reference transcript by:
 
-## Deploy on Vercel
+- converting to lowercase
+- removing punctuation
+- collapsing whitespace
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+It then compares the normalized word sequence and stores:
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- accuracy percentage
+- matched word count
+- reference/submitted word counts
+- mistake details for substitutions, missing words, and extra words
+
+## Notes
+
+- Admin-created users are created with a password you provide in the dashboard.
+- Disabling a user only flips `profiles.is_active`; it does not delete attempts or profile data.
+- Google Drive links are stored as provided, and common Drive file links are converted to a direct audio URL for playback when possible.
