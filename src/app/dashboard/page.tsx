@@ -29,62 +29,72 @@ export default async function DashboardPage({
 
   return (
     <>
-      <section className="rounded-[2rem] border border-slate-200 bg-[linear-gradient(145deg,#ffffff_0%,#f8fafc_65%,#eff6ff_100%)] p-6 shadow-sm lg:p-8">
-        <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
-          <div>
-            <p className="text-sm font-semibold uppercase tracking-[0.24em] text-sky-700">Today&apos;s focus</p>
-            <h2 className="mt-2 text-3xl font-semibold tracking-tight text-slate-950">
-              {hasTests ? "Practice a test and boost your accuracy" : "Your dashboard is ready"}
+      {/* Top Banner section */}
+      <section className="rounded-3xl border border-cb-border bg-white p-6 shadow-sm lg:p-8">
+        <div className="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
+          <div className="space-y-2">
+            <p className="text-xs font-semibold uppercase tracking-[0.24em] text-cb-blue">today&apos;s focus</p>
+            <h2 className="text-3xl font-bold tracking-tight text-cb-dark">
+              {hasTests ? "practice a test and boost your accuracy" : "your dashboard is ready"}
             </h2>
-            <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-600">
+            <p className="max-w-2xl text-sm leading-relaxed text-slate-500 font-normal">
               {hasTests
-                ? "Start with a recording that matches your pace, then review mistakes immediately after submission."
-                : "No tests are available yet. Ask your admin to add a demo test or mark your account as paid."}
+                ? "start with a recording that matches your pace, then review mistakes immediately after submission."
+                : "no tests are available yet. ask your admin to add a demo test or mark your account as paid."}
             </p>
           </div>
-          <div className="flex flex-wrap gap-2">
+          <div className="flex flex-wrap gap-3">
             <Link
               href={hasTests ? `/dashboard/tests/${tests[0]?.slug}` : "/dashboard"}
-              className="rounded-full bg-slate-950 px-5 py-2.5 text-sm font-semibold !text-white transition hover:bg-slate-800"
+              className="rounded-[56px] bg-cb-blue px-6 py-3 text-sm font-semibold text-white tracking-[0.16px] hover:bg-cb-hover transition-all text-transform: lowercase"
             >
-              {hasTests ? "Start next test" : "Refresh dashboard"}
+              {hasTests ? "start next test" : "refresh dashboard"}
             </Link>
             <Link
               href="/dashboard"
-              className="rounded-full bg-white px-5 py-2.5 text-sm font-semibold text-slate-700 ring-1 ring-slate-200 transition hover:bg-slate-50"
+              className="rounded-[56px] bg-cb-gray px-6 py-3 text-sm font-semibold text-cb-dark hover:bg-slate-200 transition-all border border-cb-border text-transform: lowercase"
             >
-              View overview
+              view overview
             </Link>
           </div>
         </div>
       </section>
 
-      <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
-        <article className="rounded-[1.75rem] bg-slate-950 p-6 text-white shadow-lg shadow-slate-300/30">
-          <p className="text-sm uppercase tracking-[0.24em] text-sky-200">Access level</p>
-          <h2 className="mt-3 text-3xl font-semibold tracking-tight">
-            {context.profile.is_paid ? "Paid member" : "Demo member"}
-          </h2>
-          <p className="mt-3 text-sm leading-6 text-slate-200">
+      {/* Stats Cards Section */}
+      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+        <article className="rounded-3xl bg-cb-dark p-6 text-white shadow-xl flex flex-col justify-between min-h-[160px]">
+          <div>
+            <p className="text-xs uppercase tracking-[0.24em] text-cb-hover font-semibold">access level</p>
+            <h2 className="mt-3 text-3xl font-bold tracking-tight">
+              {context.profile.is_paid ? "paid member" : "demo member"}
+            </h2>
+          </div>
+          <p className="mt-4 text-xs leading-normal text-slate-400 font-medium">
             {context.profile.is_paid
-              ? "You can practice both paid and demo tests."
-              : "You currently see demo tests only. Paid tests unlock when the admin marks you as paid."}
+              ? "you can practice both paid and demo tests."
+              : "you currently see demo tests only. paid tests unlock when the admin marks you as paid."}
           </p>
         </article>
-        <article className="rounded-[1.75rem] border border-slate-200 bg-white p-6 shadow-sm">
-          <p className="text-sm uppercase tracking-[0.24em] text-slate-500">Available tests</p>
-          <h2 className="mt-3 text-3xl font-semibold tracking-tight text-slate-950">{tests.length}</h2>
-          <p className="mt-3 text-sm leading-6 text-slate-600">
-            Includes all tests your current account can access.
+
+        <article className="rounded-3xl border border-cb-border bg-white p-6 shadow-sm flex flex-col justify-between min-h-[160px]">
+          <div>
+            <p className="text-xs uppercase tracking-[0.24em] text-slate-400 font-semibold">available tests</p>
+            <h2 className="mt-3 text-3xl font-bold tracking-tight text-cb-dark">{tests.length}</h2>
+          </div>
+          <p className="mt-4 text-xs leading-normal text-slate-500 font-medium">
+            includes all tests your current account can access.
           </p>
         </article>
-        <article className="rounded-[1.75rem] border border-slate-200 bg-white p-6 shadow-sm md:col-span-2 xl:col-span-1">
-          <p className="text-sm uppercase tracking-[0.24em] text-slate-500">Recent average</p>
-          <h2 className="mt-3 text-3xl font-semibold tracking-tight text-slate-950">
-            {formatPercent(averageScore)}%
-          </h2>
-          <p className="mt-3 text-sm leading-6 text-slate-600">
-            Based on your latest {attempts.length || 0} recorded attempt{attempts.length === 1 ? "" : "s"}.
+
+        <article className="rounded-3xl border border-cb-border bg-white p-6 shadow-sm flex flex-col justify-between min-h-[160px] md:col-span-2 lg:col-span-1">
+          <div>
+            <p className="text-xs uppercase tracking-[0.24em] text-slate-400 font-semibold">recent average</p>
+            <h2 className="mt-3 text-3xl font-bold tracking-tight text-cb-dark">
+              {formatPercent(averageScore)}%
+            </h2>
+          </div>
+          <p className="mt-4 text-xs leading-normal text-slate-500 font-medium">
+            based on your latest {attempts.length || 0} recorded attempt{attempts.length === 1 ? "" : "s"}.
           </p>
         </article>
       </div>
@@ -95,22 +105,21 @@ export default async function DashboardPage({
         <FlashBanner message={flash.info} kind="info" />
       </div>
 
-      <section className="grid gap-8 xl:grid-cols-[1.2fr_0.8fr]">
-        <div className="space-y-5 rounded-[2rem] border border-slate-200 bg-white p-6 shadow-sm">
-          <div className="flex items-center justify-between gap-4">
-            <div>
-              <p className="text-sm uppercase tracking-[0.24em] text-slate-500">Practice tests</p>
-              <h2 className="mt-2 text-2xl font-semibold tracking-tight text-slate-950">
-                Pick a test and start dictation practice
-              </h2>
-            </div>
+      {/* Main Grid layout */}
+      <section className="grid gap-8 lg:grid-cols-[1.2fr_0.8fr]">
+        <div className="space-y-6 rounded-3xl border border-cb-border bg-white p-6 shadow-sm lg:p-8">
+          <div>
+            <p className="text-xs uppercase tracking-[0.24em] text-slate-400 font-semibold">practice tests</p>
+            <h2 className="mt-2 text-2xl font-bold tracking-tight text-cb-dark">
+              pick a test and start dictation practice
+            </h2>
           </div>
 
-          <div className="grid gap-4">
+          <div className="grid gap-5">
             {tests.length === 0 ? (
-              <div className="rounded-2xl border border-dashed border-slate-300 bg-slate-50 p-6 text-sm text-slate-600">
+              <div className="rounded-2xl border border-dashed border-slate-300 bg-cb-gray/50 p-6 text-sm text-slate-500">
                 <p>
-                  No tests are available for your account yet. Ask the admin to add a demo test or mark
+                  no tests are available for your account yet. ask the admin to add a demo test or mark
                   your account as paid.
                 </p>
               </div>
@@ -118,78 +127,83 @@ export default async function DashboardPage({
               tests.map((test) => (
                 <article
                   key={test.id}
-                  className="rounded-[1.5rem] border border-slate-200 bg-slate-50 p-5 transition hover:border-sky-200 hover:bg-sky-50/40"
+                  className="rounded-2xl border border-cb-border bg-white p-5 transition-all duration-200 hover:border-cb-blue hover:shadow-md flex flex-col justify-between gap-4"
                 >
-                  <div className="flex flex-wrap items-center gap-3">
-                    <h3 className="text-xl font-semibold tracking-tight text-slate-950">{test.title}</h3>
-                    <span className="rounded-full bg-white px-3 py-1 text-xs font-semibold uppercase tracking-[0.2em] text-slate-500 ring-1 ring-slate-200">
-                      {test.access_type}
-                    </span>
-                  </div>
-                  <p className="mt-3 text-sm leading-6 text-slate-600">
-                    {test.description || "No description added yet."}
-                  </p>
-                  <div className="mt-4 flex flex-wrap gap-2 text-xs text-slate-500">
-                    {(test.recordings ?? []).map((recording) => (
-                      <span key={recording.id} className="rounded-full bg-white px-3 py-1 ring-1 ring-slate-200">
-                        {recording.wpm} WPM
+                  <div>
+                    <div className="flex flex-wrap items-center gap-3">
+                      <h3 className="text-lg font-bold tracking-tight text-cb-dark">{test.title}</h3>
+                      <span className="rounded-full bg-cb-gray px-3 py-1 text-[10px] font-bold uppercase tracking-[0.2em] text-slate-500">
+                        {test.access_type}
                       </span>
-                    ))}
+                    </div>
+                    <p className="mt-2 text-sm leading-relaxed text-slate-500 font-normal">
+                      {test.description || "no description added yet."}
+                    </p>
+                    <div className="mt-3 flex flex-wrap gap-2 text-xs text-slate-500 font-medium">
+                      {(test.recordings ?? []).map((recording) => (
+                        <span key={recording.id} className="rounded-full bg-cb-gray px-3 py-1 text-[11px] font-semibold text-cb-dark">
+                          {recording.wpm} wpm
+                        </span>
+                      ))}
+                    </div>
                   </div>
-                  <Link
-                    href={`/dashboard/tests/${test.slug}`}
-                    className="mt-5 inline-flex rounded-full bg-white px-4 py-2 text-sm font-semibold text-sky-700 ring-1 ring-sky-200 transition hover:bg-sky-100"
-                  >
-                    Open test
-                  </Link>
+                  <div className="pt-2 border-t border-cb-border/30 flex justify-end">
+                    <Link
+                      href={`/dashboard/tests/${test.slug}`}
+                      className="rounded-[56px] bg-cb-gray text-cb-blue border border-cb-blue hover:bg-cb-blue hover:text-white px-5 py-2 text-xs font-bold tracking-[0.16px] text-transform: lowercase transition-all duration-200 cursor-pointer"
+                    >
+                      open test
+                    </Link>
+                  </div>
                 </article>
               ))
             )}
           </div>
         </div>
 
-        <aside className="space-y-4 rounded-[2rem] border border-slate-200 bg-white p-6 shadow-sm">
+        {/* Sidebar */}
+        <aside className="space-y-6 rounded-3xl border border-cb-border bg-white p-6 shadow-sm lg:p-8">
           <div>
-            <p className="text-sm uppercase tracking-[0.24em] text-slate-500">Recent attempts</p>
-            <h2 className="mt-2 text-2xl font-semibold tracking-tight text-slate-950">
-              Review your latest scores
+            <p className="text-xs uppercase tracking-[0.24em] text-slate-400 font-semibold">recent attempts</p>
+            <h2 className="mt-2 text-2xl font-bold tracking-tight text-cb-dark">
+              review your latest scores
             </h2>
           </div>
 
-          <div className="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3">
-            <p className="text-sm text-slate-600">
+          <div className="rounded-2xl border border-cb-border bg-cb-gray/30 px-4 py-3">
+            <p className="text-xs text-slate-500 font-medium leading-relaxed">
               {hasAttempts
-                ? `You have ${attempts.length} recent attempt${attempts.length === 1 ? "" : "s"} to review.`
-                : "Complete your first attempt to track progress here."}
+                ? `you have ${attempts.length} recent attempt${attempts.length === 1 ? "" : "s"} to review.`
+                : "complete your first attempt to track progress here."}
             </p>
           </div>
 
-          <div className="space-y-3">
+          <div className="space-y-4">
             {attempts.length === 0 ? (
-              <div className="rounded-2xl border border-dashed border-slate-300 bg-slate-50 p-5 text-sm leading-6 text-slate-600">
-                You haven&apos;t submitted any transcript yet. Open a test and complete your first practice attempt.
+              <div className="rounded-2xl border border-dashed border-slate-300 bg-cb-gray/30 p-5 text-sm leading-relaxed text-slate-500">
+                you haven&apos;t submitted any transcript yet. open a test and complete your first practice attempt.
               </div>
             ) : (
               attempts.map((attempt) => (
                 <Link
                   key={attempt.id}
                   href={`/dashboard/attempts/${attempt.id}`}
-                  className="block rounded-[1.5rem] border border-slate-200 bg-slate-50 p-4 transition hover:border-sky-300 hover:bg-sky-50"
+                  className="block rounded-2xl border border-cb-border bg-white p-4 transition-all duration-200 hover:border-cb-blue hover:shadow-sm"
                 >
                   <div className="flex items-center justify-between gap-3">
                     <div>
-                      <p className="font-semibold text-slate-950">
-                        {attempt.recording?.test?.title || "Practice test"}
+                      <p className="font-bold text-cb-dark text-sm leading-snug">
+                        {attempt.recording?.test?.title || "practice test"}
                       </p>
-                      <p className="text-sm text-slate-500">
-                        {attempt.recording?.wpm ?? "-"} WPM · {formatDate(attempt.created_at)}
+                      <p className="text-xs text-slate-400 font-medium mt-1">
+                        {attempt.recording?.wpm ?? "-"} wpm · {formatDate(attempt.created_at)}
                       </p>
                     </div>
-                    <span className="rounded-full bg-white px-3 py-1 text-sm font-semibold text-slate-900 ring-1 ring-slate-200">
+                    <span className="rounded-full bg-cb-gray px-3 py-1.5 text-xs font-bold text-cb-blue border border-cb-border">
                       {formatPercent(attempt.accuracy)}%
                     </span>
                   </div>
-                  <p className="mt-3 text-sm text-slate-600">
+                  <p className="mt-3 text-xs leading-relaxed text-slate-500 font-medium">
                     {attempt.mistake_count} mistake{attempt.mistake_count === 1 ? "" : "s"} across {attempt.reference_word_count} reference words.
                   </p>
                 </Link>

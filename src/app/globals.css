@@ -1,15 +1,23 @@
 @import "tailwindcss";
 
 :root {
-  --background: #f1f5f9;
-  --foreground: #0f172a;
+  --background: #ffffff;
+  --foreground: #0a0b0d;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
+  --font-sans: var(--font-inter), Arial, sans-serif;
   --font-mono: var(--font-geist-mono);
+
+  --color-cb-blue: #0052ff;
+  --color-cb-hover: #578bfa;
+  --color-cb-link: #0667d0;
+  --color-cb-dark: #0a0b0d;
+  --color-cb-gray: #eef0f3;
+  --color-cb-card: #282b31;
+  --color-cb-border: rgba(91, 97, 110, 0.2);
 }
 
 * {
@@ -24,7 +32,7 @@ body {
   min-height: 100vh;
   background: var(--background);
   color: var(--foreground);
-  font-family: var(--font-geist-sans), Arial, Helvetica, sans-serif;
+  font-family: var(--font-inter), Arial, sans-serif;
 }
 
 a {
@@ -40,6 +48,19 @@ textarea {
 }
 
 ::selection {
-  background: #bfdbfe;
-  color: #0f172a;
+  background: #0052ff;
+  color: #ffffff;
+}
+
+@keyframes slide-right {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+.animate-slide-right {
+  animation: slide-right 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
